@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Careless Coders</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050a0f;
+    --accent: #00d4ff;
+    --accent2: #0088cc;
+    --accent3: #ff6b00;
+    --text: #e0f0ff;
+    --muted: #4a6a80;
+    --card: #0a1520;
+    --border: #0f2535;
+    --glow: 0 0 20px rgba(0,212,255,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ========== PAGE SYSTEM ========== */
+  .page { display: none; position: relative; z-index: 1; }
+  .page.active { display: block; }
+  #home.active { display: flex; }
+
+  /* ========== HOME ========== */
+  #home {
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .logo-icon {
+    font-size: 64px;
+    display: block;
+    margin-bottom: 20px;
+    animation: pulse 3s ease-in-out infinite;
+  }
+  .logo-icon img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 16px;
+    border: 2px solid var(--accent);
+  }
+  .profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  .bot-icon-img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  @keyframes pulse {
+    0%,100% { filter: drop-shadow(0 0 15px var(--accent)); }
+    50% { filter: drop-shadow(0 0 40px var(--accent)); }
+  }
+
+  .brand-name {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2.2rem, 9vw, 5rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent), #fff, var(--accent));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shine 3s linear infinite;
+    letter-spacing: 4px;
+    line-height: 1.1;
+    margin-bottom: 14px;
+  }
+  @keyframes shine { to { background-position: 200% center; } }
+
+  .tagline {
+    font-size: 1rem;
+    color: var(--muted);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .divider {
+    width: 120px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    margin: 24px auto 36px;
+  }
+
+  .home-socials {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 52px;
+  }
+
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    background: var(--card);
+    transition: all 0.3s;
+  }
+  .social-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: var(--glow);
+    transform: translateY(-2px);
+  }
+
+  .main-buttons {
+    display: flex;
+    gap: 22px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .main-btn {
+    padding: 22px 44px;
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s;
+    min-width: 230px;
+  }
+  .main-btn.accounts {
+    background: linear-gradient(135deg, #003d5c, #005c8a);
+    color: var(--accent);
+    border: 1px solid var(--accent2);
+  }
+  .main-btn.bots {
+    background: linear-gradient(135deg, #3d1a00, #5c2800);
+    color: var(--accent3);
+    border: 1px solid #cc4400;
+  }
+  .main-btn:hover { transform: translateY(-4px); }
+  .main-btn.accounts:hover { box-shadow: 0 10px 30px rgba(0,212,255,0.3); }
+  .main-btn.bots:hover { box-shadow: 0 10px 30px rgba(255,107,0,0.3); }
+
+  /* ========== INNER PAGES ========== */
+  .back-bar {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(5,10,15,0.97);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  .back-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+  }
+  .back-btn:hover { border-color: var(--accent); box-shadow: var(--glow); }
+
+  .inner-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+  }
+
+  /* Profile Card */
+  .profile-card {
+    background: linear-gradient(135deg, #080f18, #0c1a28);
+    border: 1px solid rgba(0,212,255,0.25);
+    border-radius: 14px;
+    padding: 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden;
+    flex-wrap: wrap;
+  }
+  .profile-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  .profile-avatar {
+    width: 86px;
+    height: 86px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent2), #003d5c);
+    border: 3px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.4rem;
+    flex-shrink: 0;
+    box-shadow: 0 0 25px rgba(0,212,255,0.25);
+  }
+
+  .profile-info { flex: 1; }
+  .profile-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--accent);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .profile-handle { color: var(--muted); font-size: 0.95rem; letter-spacing: 1px; margin-bottom: 14px; }
+
+  .profile-links { display: flex; gap: 10px; flex-wrap: wrap; }
+  .profile-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.2);
+    color: var(--accent);
+    text-decoration: none;
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+  }
+  .profile-link:hover { background: rgba(0,212,255,0.15); border-color: var(--accent); box-shadow: var(--glow); }
+  .proof-link { border-color: #00c853 !important; color: #00c853 !important; }
+  .proof-link:hover { background: rgba(0,200,83,0.15) !important; border-color: #00c853 !important; box-shadow: 0 0 15px rgba(0,200,83,0.4) !important; }
+
+  /* Section Label */
+  .section-label {
+    font-size: 0.78rem;
+    letter-spacing: 4px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    margin-top: 32px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Accounts Grid */
+  .accounts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 13px;
+  }
+
+  .account-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .account-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .account-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: var(--glow); }
+  .account-card:hover::before { opacity: 1; }
+
+  .account-flag { font-size: 1.4rem; margin-bottom: 8px; }
+  .account-name { font-weight: 700; font-size: 1rem; margin-bottom: 8px; }
+  .account-price { font-family: 'Orbitron', monospace; font-size: 1.1rem; color: var(--accent); font-weight: 700; }
+  .account-price span { font-size: 0.68rem; color: var(--muted); font-family: 'Rajdhani', sans-serif; margin-left: 3px; }
+  .buy-tag {
+    position: absolute; top: 10px; right: 10px;
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.25);
+    color: var(--accent);
+    font-size: 0.6rem; padding: 2px 7px; border-radius: 3px; letter-spacing: 1px;
+  }
+
+  /* Bots */
+  .bots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+  }
+
+  .bot-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 26px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .bot-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent3), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .bot-card:hover { border-color: rgba(255,107,0,0.4); transform: translateY(-3px); box-shadow: 0 0 20px rgba(255,107,0,0.15); }
+  .bot-card:hover::after { opacity: 1; }
+
+  .bot-icon { font-size: 2rem; margin-bottom: 12px; display: block; }
+  .bot-name { font-family: 'Orbitron', monospace; font-size: 0.92rem; font-weight: 700; margin-bottom: 8px; letter-spacing: 1px; }
+  .bot-desc { font-size: 0.88rem; color: var(--muted); margin-bottom: 18px; line-height: 1.5; }
+  .bot-footer { display: flex; align-items: center; justify-content: space-between; }
+  .bot-price { font-family: 'Orbitron', monospace; font-size: 1.3rem; color: var(--accent3); font-weight: 700; }
+
+  .buy-btn {
+    background: linear-gradient(135deg, #3d1a00, #5c2800);
+    border: 1px solid #cc4400;
+    color: var(--accent3);
+    padding: 9px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+  }
+  .buy-btn:hover { box-shadow: 0 0 15px rgba(255,107,0,0.4); transform: scale(1.05); }
+
+  /* Premium */
+  .premium-section {
+    background: linear-gradient(135deg, #0a1a25, #0d2035);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 14px;
+    padding: 38px 32px;
+    text-align: center;
+    margin-top: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .premium-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #ffd700, transparent);
+  }
+
+  .premium-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    color: #000;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    font-weight: 900;
+    padding: 6px 18px;
+    border-radius: 20px;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+
+  .premium-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.3rem, 4vw, 2rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+
+  .premium-desc { color: #8ab0c8; font-size: 1rem; max-width: 480px; margin: 0 auto 18px; line-height: 1.6; }
+
+  .premium-features { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+  .premium-feature {
+    background: rgba(0,212,255,0.07);
+    border: 1px solid rgba(0,212,255,0.15);
+    padding: 7px 16px; border-radius: 20px; font-size: 0.88rem; color: var(--accent);
+  }
+
+  .premium-price { font-family: 'Orbitron', monospace; font-size: 2.8rem; font-weight: 900; color: #ffd700; margin-bottom: 4px; }
+  .premium-price-label { color: var(--muted); font-size: 0.88rem; margin-bottom: 22px; }
+
+  .premium-buy-btn {
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    border: none; color: #000;
+    padding: 16px 44px; border-radius: 8px; cursor: pointer;
+    font-family: 'Orbitron', monospace; font-weight: 900; font-size: 1rem; letter-spacing: 2px;
+    transition: all 0.3s;
+  }
+  .premium-buy-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255,215,0,0.4); }
+
+  /* Popup */
+  .popup-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.88); z-index: 9999;
+    align-items: center; justify-content: center; padding: 20px;
+    backdrop-filter: blur(10px);
+  }
+  .popup-overlay.show { display: flex; }
+
+  .popup {
+    background: linear-gradient(135deg, #080f18, #0c1622);
+    border: 1px solid var(--accent);
+    border-radius: 14px; padding: 40px 32px;
+    max-width: 400px; width: 100%; text-align: center;
+    box-shadow: 0 0 60px rgba(0,212,255,0.2);
+    animation: popIn 0.3s ease;
+  }
+  @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  .popup-icon { font-size: 3rem; margin-bottom: 14px; display: block; }
+  .popup-title { font-family: 'Orbitron', monospace; font-size: 1.2rem; color: var(--accent); margin-bottom: 8px; }
+  .popup-product { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+  .popup-price { font-family: 'Orbitron', monospace; font-size: 1.6rem; color: var(--accent); margin-bottom: 14px; }
+  .popup-msg { color: var(--muted); font-size: 0.9rem; margin-bottom: 22px; line-height: 1.5; }
+
+  .popup-contact-btn {
+    display: block;
+    background: linear-gradient(135deg, #003d5c, #0066aa);
+    border: 1px solid var(--accent);
+    color: var(--accent); padding: 14px 32px; border-radius: 8px;
+    text-decoration: none; font-family: 'Orbitron', monospace;
+    font-weight: 700; font-size: 0.9rem; letter-spacing: 1px;
+    transition: all 0.3s; margin-bottom: 10px;
+  }
+  .popup-contact-btn:hover { box-shadow: var(--glow); transform: translateY(-2px); }
+
+  .popup-close {
+    background: none; border: 1px solid var(--border); color: var(--muted);
+    padding: 10px; border-radius: 6px; cursor: pointer;
+    font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; width: 100%; margin-top: 4px; transition: all 0.3s;
+  }
+  .popup-close:hover { border-color: var(--muted); color: var(--text); }
+
+  .footer-note { text-align: center; color: var(--muted); font-size: 0.8rem; padding: 30px 20px 10px; letter-spacing: 1px; }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent2); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="home" class="page active">
+  <span class="logo-icon"><img src="https://files.catbox.moe/o6wthq.jpg" alt="Careless Coders Logo"></span>
+  <div class="brand-name">CARELESS<br>CODERS</div>
+  <div class="tagline">Premium Telegram Solutions</div>
+  <div class="divider"></div>
+  <div class="home-socials">
+    <a href="https://t.me/ll_CarelessxCoder_ll" target="_blank" class="social-link">✈️ Channel</a>
+    <a href="https://t.me/II_StarkxRich_II" target="_blank" class="social-link">👥 Group</a>
+    <a href="https://t.me/CarelessxOwner" target="_blank" class="social-link">👤 Contact Owner</a>
+    <a href="https://t.me/ll_CarelessxCoderxProofs_ll" target="_blank" class="social-link proof-link">✅ Sales Proof</a>
+  </div>
+  <div class="main-buttons">
+    <button class="main-btn accounts" onclick="goTo('accounts')"><img src="https://files.catbox.moe/6uuvsg.jpg" style="width:24px;height:24px;border-radius:4px;object-fit:cover;vertical-align:middle;margin-right:6px;"> Telegram Accounts</button>
+    <button class="main-btn bots" onclick="goTo('bots')"><img src="https://files.catbox.moe/d36pm4.jpg" style="width:24px;height:24px;border-radius:4px;object-fit:cover;vertical-align:middle;margin-right:6px;"> Telegram Bots</button>
+  </div>
+  <div class="footer-note">All products sold legally • Trusted seller</div>
+</div>
+
+<!-- ACCOUNTS PAGE -->
+<div id="accounts" class="page">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goTo('home')">← Back to Home</button>
+  </div>
+  <div class="inner-wrap">
+    <div class="profile-card">
+      <div class="profile-avatar"><img src="https://files.catbox.moe/o6wthq.jpg" alt="Logo"></div>
+      <div class="profile-info">
+        <div class="profile-name">Careless Coders</div>
+        <div class="profile-handle">@CarelessxOwner • Trusted Telegram Seller</div>
+        <div class="profile-links">
+          <a href="https://t.me/CarelessxOwner" target="_blank" class="profile-link">👤 My Profile</a>
+          <a href="https://t.me/ll_CarelessxCoder_ll" target="_blank" class="profile-link">✈️ Channel</a>
+          <a href="https://t.me/II_StarkxRich_II" target="_blank" class="profile-link">👥 Group</a>
+          <a href="https://t.me/ll_CarelessxCoderxProofs_ll" target="_blank" class="profile-link proof-link">✅ Sales Proof</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">🇮🇳 India Accounts</div>
+    <div class="accounts-grid" id="india-grid"></div>
+
+    <div class="section-label">🌍 International Accounts</div>
+    <div class="accounts-grid" id="intl-grid"></div>
+
+    <div class="footer-note">Click any account to contact owner on Telegram</div>
+  </div>
+</div>
+
+<!-- BOTS PAGE -->
+<div id="bots" class="page">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goTo('home')">← Back to Home</button>
+  </div>
+  <div class="inner-wrap">
+    <div class="profile-card">
+      <div class="profile-avatar"><img src="https://files.catbox.moe/o6wthq.jpg" alt="Logo"></div>
+      <div class="profile-info">
+        <div class="profile-name">Careless Coders</div>
+        <div class="profile-handle">@CarelessxOwner • OSINT & Powerful Bots</div>
+        <div class="profile-links">
+          <a href="https://t.me/CarelessxOwner" target="_blank" class="profile-link">👤 My Profile</a>
+          <a href="https://t.me/ll_CarelessxCoder_ll" target="_blank" class="profile-link">✈️ Channel</a>
+          <a href="https://t.me/II_StarkxRich_II" target="_blank" class="profile-link">👥 Group</a>
+          <a href="https://t.me/ll_CarelessxCoderxProofs_ll" target="_blank" class="profile-link proof-link">✅ Sales Proof</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label"><img src="https://files.catbox.moe/d36pm4.jpg" style="width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-align:middle;margin-right:6px;"> Available Bots</div>
+    <div class="bots-grid">
+      <div class="bot-card">
+        <span class="bot-icon">🔍</span>
+        <div class="bot-name">Number Information Bot</div>
+        <div class="bot-desc">Get detailed information about any phone number instantly. Carrier, location, and more.</div>
+        <div class="bot-footer">
+          <div class="bot-price">₹50</div>
+          <button class="buy-btn" onclick="openPopup('Number Information Bot','₹50')">BUY NOW</button>
+        </div>
+      </div>
+      <div class="bot-card">
+        <span class="bot-icon">📲</span>
+        <div class="bot-name">TG to Number Bot</div>
+        <div class="bot-desc">Find the phone number linked to any Telegram account. Powerful OSINT tool.</div>
+        <div class="bot-footer">
+          <div class="bot-price">₹90</div>
+          <button class="buy-btn" onclick="openPopup('TG to Number Bot','₹90')">BUY NOW</button>
+        </div>
+      </div>
+      <div class="bot-card">
+        <span class="bot-icon">📸</span>
+        <div class="bot-name">Insta to Number Bot</div>
+        <div class="bot-desc">Extract phone number from Instagram accounts. Advanced OSINT capabilities.</div>
+        <div class="bot-footer">
+          <div class="bot-price">₹100</div>
+          <button class="buy-btn" onclick="openPopup('Insta to Number Bot','₹100')">BUY NOW</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="premium-section">
+      <div class="premium-badge">⭐ PREMIUM</div>
+      <div class="premium-title">Premium Subscription</div>
+      <div class="premium-desc">Subscribe to Premium and get access to ALL bots at the cheapest possible price. One subscription, everything included.</div>
+      <div class="premium-features">
+        <span class="premium-feature">✓ All Bots Access</span>
+        <span class="premium-feature">✓ Cheapest Price</span>
+        <span class="premium-feature">✓ Priority Support</span>
+        <span class="premium-feature">✓ Future Bots Free</span>
+      </div>
+      <div class="premium-price">₹150</div>
+      <div class="premium-price-label">one-time subscription • all bots included</div>
+      <button class="premium-buy-btn" onclick="openPopup('Premium Subscription','₹150')">⭐ GET PREMIUM NOW</button>
+    </div>
+
+    <div class="footer-note">All bots for legal use only</div>
+  </div>
+</div>
+
+<!-- POPUP -->
+<div class="popup-overlay" id="popup" onclick="closeOutside(event)">
+  <div class="popup">
+    <span class="popup-icon">✈️</span>
+    <div class="popup-title">Contact Owner</div>
+    <div class="popup-product" id="popup-product"></div>
+    <div class="popup-price" id="popup-price"></div>
+    <div class="popup-msg">Click below to message the owner on Telegram and complete your purchase.</div>
+    <a href="https://t.me/CarelessxOwner" target="_blank" class="popup-contact-btn">📩 Message @CarelessxOwner</a>
+    <button class="popup-close" onclick="closePopup()">✕ Close</button>
+  </div>
+</div>
+
+<script>
+  const indiaAccounts = [
+    {name:"India",price:"₹65",flag:"🇮🇳"},
+    {name:"India 2024",price:"₹75",flag:"🇮🇳"},
+    {name:"India 2023",price:"₹95",flag:"🇮🇳"},
+    {name:"India 2022",price:"₹115",flag:"🇮🇳"},
+    {name:"India 2021",price:"₹125",flag:"🇮🇳"},
+    {name:"India 2020–19",price:"₹195",flag:"🇮🇳"},
+    {name:"India 2018–17",price:"₹295–₹395",flag:"🇮🇳"},
+  ];
+  const intlAccounts = [
+    {name:"USA",price:"₹65",flag:"🇺🇸"},
+    {name:"Afghanistan",price:"₹85",flag:"🇦🇫"},
+    {name:"Azerbaijan",price:"₹60",flag:"🇦🇿"},
+    {name:"Bangladesh",price:"₹55",flag:"🇧🇩"},
+    {name:"Burkina Faso",price:"₹70",flag:"🇧🇫"},
+    {name:"Benin",price:"₹70",flag:"🇧🇯"},
+    {name:"Brazil",price:"₹65",flag:"🇧🇷"},
+    {name:"Chile",price:"₹115",flag:"🇨🇱"},
+    {name:"China",price:"₹95",flag:"🇨🇳"},
+    {name:"Costa Rica",price:"₹65",flag:"🇨🇷"},
+    {name:"Costa Rica (Spam)",price:"₹55",flag:"🇨🇷"},
+    {name:"Czechia",price:"₹155",flag:"🇨🇿"},
+    {name:"Dominican Republic",price:"₹60",flag:"🇩🇴"},
+    {name:"Ecuador",price:"₹70",flag:"🇪🇨"},
+    {name:"Israel",price:"₹65",flag:"🇮🇱"},
+    {name:"Iran",price:"₹90",flag:"🇮🇷"},
+    {name:"Iran 2020",price:"₹295",flag:"🇮🇷"},
+    {name:"Iran 2021",price:"₹235",flag:"🇮🇷"},
+    {name:"Iran 2022",price:"₹175",flag:"🇮🇷"},
+    {name:"Iran 2023",price:"₹145",flag:"🇮🇷"},
+    {name:"Iran 2024",price:"₹110",flag:"🇮🇷"},
+    {name:"Iran (Spam)",price:"₹53",flag:"🇮🇷"},
+    {name:"Sri Lanka",price:"₹55",flag:"🇱🇰"},
+    {name:"Myanmar",price:"₹50",flag:"🇲🇲"},
+    {name:"Malaysia",price:"₹60",flag:"🇲🇾"},
+    {name:"Poland",price:"₹135",flag:"🇵🇱"},
+    {name:"Saudi Arabia",price:"₹165",flag:"🇸🇦"},
+    {name:"Uzbekistan (Spam)",price:"₹50",flag:"🇺🇿"},
+  ];
+
+  function renderAccounts() {
+    const ig = document.getElementById('india-grid');
+    const ug = document.getElementById('intl-grid');
+    indiaAccounts.forEach(a => {
+      ig.innerHTML += `<div class="account-card" onclick="openPopup('${a.name} Account','${a.price}')">
+        <div class="buy-tag">BUY</div>
+        <div class="account-flag">${a.flag}</div>
+        <div class="account-name">${a.name}</div>
+        <div class="account-price">${a.price}<span>/account</span></div>
+      </div>`;
+    });
+    intlAccounts.forEach(a => {
+      ug.innerHTML += `<div class="account-card" onclick="openPopup('${a.name} Account','${a.price}')">
+        <div class="buy-tag">BUY</div>
+        <div class="account-flag">${a.flag}</div>
+        <div class="account-name">${a.name}</div>
+        <div class="account-price">${a.price}<span>/account</span></div>
+      </div>`;
+    });
+  }
+
+  function goTo(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function openPopup(product, price) {
+    document.getElementById('popup-product').textContent = product;
+    document.getElementById('popup-price').textContent = price;
+    document.getElementById('popup').classList.add('show');
+  }
+  function closePopup() { document.getElementById('popup').classList.remove('show'); }
+  function closeOutside(e) { if (e.target.id === 'popup') closePopup(); }
+
+  renderAccounts();
+</script>
+</body>
+</html>
